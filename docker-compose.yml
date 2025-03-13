@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: example_password
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+    networks:
+      - nestjs-network
+
+networks:
+  nestjs-network:
+    driver: bridge
