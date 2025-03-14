@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { Prisma, Task, User } from '@prisma/client';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { RegisterDto } from 'src/auth/dto/register-dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -32,9 +33,15 @@ export class UserService {
     });
   }
 
-  async create(data: CreateUserDto): Promise<User> {
+  async create(data: RegisterDto): Promise<User> {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(data.password, salt);
+
     return this.prisma.user.create({
-      data,
+      data: {
+        login: data.login,
+        passwordHash: hash
+      }
     });
   }
 
@@ -53,5 +60,24 @@ export class UserService {
     return this.prisma.user.delete({
       where,
     });
+  }
+
+  async comparePassword(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+    password: string
+  ): Promise<User> {
+    const user = await this.findOne(userWhereUniqueInput);
+    
+    if (!user) {
+      throw new BadRequestException('Wrong login or password');
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+
+    if (!isMatch) {
+      throw new BadRequestException('Wrong login or password');
+    }
+
+    return user;
   }
 }

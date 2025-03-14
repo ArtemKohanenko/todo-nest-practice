@@ -8,10 +8,10 @@ export class TaskService {
   constructor(private prisma: PrismaService) {}
 
   async findOne(
-    taskWhereUniqueInput: Prisma.TaskWhereUniqueInput,
+    taskWhereInput: Prisma.TaskWhereInput,
   ): Promise<Task | null> {
-    return this.prisma.task.findUnique({
-      where: taskWhereUniqueInput,
+    return this.prisma.task.findFirst({
+      where: taskWhereInput,
     });
   }
 
@@ -32,9 +32,12 @@ export class TaskService {
     });
   }
 
-  async create(data: CreateTaskDto): Promise<Task> {
+  async create(userId: string, data: CreateTaskDto): Promise<Task> {
     return this.prisma.task.create({
-      data,
+      data: {
+        ...data,
+        userId
+      }
     });
   }
 
