@@ -7,6 +7,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Создаем Swagger документацию
   const config = new DocumentBuilder()
     .setTitle('API')
     .setDescription('Todo-list API description')
@@ -26,7 +27,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'https://your-frontend-domain.com',
+    origin: 'http://localhost:3000',
     methods: 'GET,PATCH,POST,DELETE',
     credentials: false
   });
