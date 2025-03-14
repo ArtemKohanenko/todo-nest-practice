@@ -13,21 +13,8 @@ export class TaskService {
     });
   }
 
-  async findAll(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.TaskWhereUniqueInput;
-    where?: Prisma.TaskWhereInput;
-    orderBy?: Prisma.TaskOrderByWithRelationInput;
-  }): Promise<Task[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.task.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+  async findAll(params: { where?: Prisma.TaskWhereInput }): Promise<Task[]> {
+    return this.prisma.task.findMany(params);
   }
 
   async create(userId: string, data: CreateTaskDto): Promise<Task> {

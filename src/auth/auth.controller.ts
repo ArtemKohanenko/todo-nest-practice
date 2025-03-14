@@ -22,8 +22,8 @@ export class AuthController {
     const user = await this.userService.create(registerDto);
     const payload = { login: user.login, id: user.id };
     res.cookie('token', this.jwtService.sign(payload), {
-      httpOnly: true,                                     // Защита от XSS!!!
-      expires: new Date(Date.now() + 3600000),
+      httpOnly: true, // Защита от XSS!!!
+      expires: new Date(Date.now() + 604800000),
     });
     return user;
   }
@@ -39,8 +39,8 @@ export class AuthController {
     );
     const payload = { username: user.login, id: user.id };
     res.cookie('token', this.jwtService.sign(payload), {
-      httpOnly: true,                                             // Защита от XSS!!!
-      expires: new Date(Date.now() + 3600000),
+      httpOnly: true, // Защита от XSS!!!
+      expires: new Date(Date.now() + 604800000),
     });
     return user;
   }
@@ -49,7 +49,7 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response) {
     res.cookie('token', '', {
       expires: new Date(Date.now()),
-      httpOnly: true,                               // Защита от XSS!!!
+      httpOnly: true, // Защита от XSS!!!
     });
     return {};
   }

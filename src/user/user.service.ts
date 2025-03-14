@@ -17,21 +17,12 @@ export class UserService {
   }
 
   async findAll(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.TaskOrderByWithRelationInput;
   }) {
-    const { skip, take, cursor, where, orderBy } = params;
-    const user = await this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+    const user = await this.prisma.user.findMany(params);
     const usersWithoutPassword = user.map((user) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { passwordHash, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
@@ -49,6 +40,7 @@ export class UserService {
         passwordHash: hash,
       },
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;
 
     return userWithoutPassword;
@@ -63,6 +55,7 @@ export class UserService {
       data,
       where,
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;
 
     return userWithoutPassword;
@@ -72,6 +65,7 @@ export class UserService {
     const user = await this.prisma.user.delete({
       where,
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;
 
     return userWithoutPassword;
