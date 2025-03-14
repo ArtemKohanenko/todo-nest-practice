@@ -22,44 +22,59 @@ export class UserService {
     cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.TaskOrderByWithRelationInput;
-  }): Promise<User[]> {
+  }) {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
+    const user = await this.prisma.user.findMany({
       skip,
       take,
       cursor,
       where,
       orderBy,
     });
+    const usersWithoutPassword = user.map((user) => {
+      const { passwordHash, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+
+    return usersWithoutPassword;
   }
 
-  async create(data: RegisterDto): Promise<User> {
+  async create(data: RegisterDto) {
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(data.password, salt);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         login: data.login,
         passwordHash: hash,
       },
     });
+    const { passwordHash, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
-  }): Promise<User> {
+  }) {
     const { where, data } = params;
-    return this.prisma.user.update({
+    const user = await this.prisma.user.update({
       data,
       where,
     });
+    const { passwordHash, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 
-  async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
+  async delete(where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.delete({
       where,
     });
+    const { passwordHash, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 
   async comparePassword(
