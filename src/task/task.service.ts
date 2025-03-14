@@ -7,9 +7,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  async findOne(
-    taskWhereInput: Prisma.TaskWhereInput,
-  ): Promise<Task | null> {
+  async findOne(taskWhereInput: Prisma.TaskWhereInput): Promise<Task | null> {
     return this.prisma.task.findFirst({
       where: taskWhereInput,
     });
@@ -36,8 +34,8 @@ export class TaskService {
     return this.prisma.task.create({
       data: {
         ...data,
-        userId
-      }
+        userId,
+      },
     });
   }
 

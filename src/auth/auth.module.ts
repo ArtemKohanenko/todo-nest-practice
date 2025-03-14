@@ -14,10 +14,10 @@ import { UserModule } from 'src/user/user.module';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
         signOptions: { expiresIn: '7d' },
-      })
+      }),
     }),
-    UserModule
+    UserModule,
   ],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}

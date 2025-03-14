@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -13,16 +13,16 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne({id});
+    return this.userService.findOne({ id });
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update({where: {id}, data: updateUserDto});
+    return this.userService.update({ where: { id }, data: updateUserDto });
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userService.delete({id});
+    return this.userService.delete({ id });
   }
 }

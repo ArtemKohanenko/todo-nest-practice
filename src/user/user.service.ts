@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
-  
+
   async findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
@@ -40,8 +40,8 @@ export class UserService {
     return this.prisma.user.create({
       data: {
         login: data.login,
-        passwordHash: hash
-      }
+        passwordHash: hash,
+      },
     });
   }
 
@@ -64,10 +64,10 @@ export class UserService {
 
   async comparePassword(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-    password: string
+    password: string,
   ): Promise<User> {
     const user = await this.findOne(userWhereUniqueInput);
-    
+
     if (!user) {
       throw new BadRequestException('Wrong login or password');
     }
