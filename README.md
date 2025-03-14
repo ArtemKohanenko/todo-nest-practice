@@ -7,7 +7,7 @@
 node -v
 ```
 
-Установи Docker Compose под свою систему (https://docs.docker.com/compose/install).
+Установи Docker Compose (или Docker Desktop) под свою систему (https://docs.docker.com/compose/install).
 
 # Команды
 
