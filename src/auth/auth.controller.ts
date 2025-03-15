@@ -4,6 +4,10 @@ import { LoginDto } from './dto/login-dto';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
+import { ApiResponse } from '@nestjs/swagger';
+import { UserDto } from 'src/user/dto/user.dto';
+
+const SEVEN_DAYS_MILLISECONDS = 604800000;
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +18,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @ApiResponse({ status: 200, type: UserDto })
   async register(
     @Res({ passthrough: true }) res: Response,
     @Body() registerDto: LoginDto,
@@ -25,13 +30,14 @@ export class AuthController {
     const payload = { login: user.login, id: user.id };
     res.cookie('token', this.jwtService.sign(payload), {
       httpOnly: true, // Защита от XSS!!!
-      expires: new Date(Date.now() + 604800000),
+      expires: new Date(Date.now() + SEVEN_DAYS_MILLISECONDS),
     });
     
     return user;
   }
 
   @Post('login')
+  @ApiResponse({ status: 200, type: UserDto })
   async login(
     @Res({ passthrough: true }) res: Response,
     @Body() loginDto: LoginDto,
@@ -43,17 +49,18 @@ export class AuthController {
     const payload = { username: user.login, id: user.id };
     res.cookie('token', this.jwtService.sign(payload), {
       httpOnly: true, // Защита от XSS!!!
-      expires: new Date(Date.now() + 604800000),
+      expires: new Date(Date.now() + SEVEN_DAYS_MILLISECONDS),
     });
     return user;
   }
 
   @Post('logout')
+  @ApiResponse({ status: 200 })
   logout(@Res({ passthrough: true }) res: Response) {
     res.cookie('token', '', {
       expires: new Date(Date.now()),
       httpOnly: true, // Защита от XSS!!!
-    });
+    })
     return {};
   }
 }

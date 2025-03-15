@@ -67,7 +67,7 @@ export class UserService {
   async comparePassword(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     password: string,
-  ): Promise<User> {
+  ) {
     const user = await this.findOne(userWhereUniqueInput);
 
     if (!user) {
@@ -80,6 +80,9 @@ export class UserService {
       throw new BadRequestException('Wrong login or password');
     }
 
-    return user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 }
