@@ -4,7 +4,11 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 export class CreateTaskDto {
   @ApiProperty({ example: 'Buy milk' })
   @IsString()
-  text: string;
+  title: string;
+
+  @ApiProperty({ example: 'Do it fast' })
+  @IsString()
+  description: string;
 
   @ApiProperty({ example: false })
   @IsBoolean()

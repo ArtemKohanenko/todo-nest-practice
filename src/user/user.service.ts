@@ -64,6 +64,7 @@ export class UserService {
     return userWithoutPassword;
   }
 
+  // Проверка хэша пароля в БД с хэшем отправленного пароля
   async comparePassword(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     password: string,

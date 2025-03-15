@@ -7,7 +7,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Создаем Swagger документацию
+  // Создаем Swagger документацию на http://localhost:3000/docs
   const config = new DocumentBuilder()
     .setTitle('API')
     .setDescription('Todo-list API description')
@@ -26,14 +26,17 @@ async function bootstrap() {
     }),
   );
 
+  // Позволяет использовать куки
   app.use(cookieParser());
 
+  // Разрешаем только GET,PATCH,POST,DELETE запросы со страницы http://localhost:3000
   app.enableCors({
     origin: 'http://localhost:3000',
     methods: 'GET,PATCH,POST,DELETE',
     credentials: false,
   });
 
+  // Запуск сервера
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

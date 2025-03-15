@@ -7,8 +7,8 @@ import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
-    JwtModule.register({
+    PassportModule.register({ defaultStrategy: 'jwt', session: false }),  // Модуль со стратегиями аутентификации
+    JwtModule.register({                            // Модуль для создания и расшифровки JWT
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },
     }),

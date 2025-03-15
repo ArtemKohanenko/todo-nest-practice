@@ -17,12 +17,9 @@ export class TaskService {
     return this.prisma.task.findMany(params);
   }
 
-  async create(userId: string, data: CreateTaskDto): Promise<Task> {
+  async create(data: Prisma.TaskCreateInput): Promise<Task> {
     return this.prisma.task.create({
-      data: {
-        ...data,
-        userId,
-      },
+      data
     });
   }
 

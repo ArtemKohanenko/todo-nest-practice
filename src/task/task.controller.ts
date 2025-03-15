@@ -15,15 +15,27 @@ import { JwtGuard } from 'src/auth/guards';
 import { UserId } from 'src/common/user-id.decorator';
 import { TaskDto } from './dto/task.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { UserService } from 'src/user/user.service';
 
 @Controller('task')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly userService: UserService
+  ) {}
 
   @UseGuards(JwtGuard)
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto, @UserId() userId: string) {
-    return this.taskService.create(userId, createTaskDto);
+  create(@Body() createTaskDto: CreateTaskDto, @UserId() userId: string) {  // @UserId() извлекает id из токена в куки
+    const user = this.userService.findOne({ id: userId });
+    
+    // Создаем Task, передаем поля из createTaskDto объединенные с user
+    // connect: {id: userId} отвечает за связь между Task и User
+    return this.taskService.create({
+      ...createTaskDto,
+      user: { 
+        connect: {id: userId}
+      } });
   }
 
   @UseGuards(JwtGuard)

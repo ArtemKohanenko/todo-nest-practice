@@ -5,8 +5,11 @@ export class TaskDto implements Task {
     @ApiProperty({ example: 'id' })
     id: string;
 
-    @ApiProperty({ example: 'text' })
-    text: string;
+    @ApiProperty({ example: 'Title' })
+    title: string;
+
+    @ApiProperty({ example: 'Some description.' })
+    description: string;
 
     @ApiProperty({ example: false })
     done: boolean;
@@ -16,4 +19,7 @@ export class TaskDto implements Task {
 
     @ApiProperty({ example: '2025-03-15T05:52:13.908Z' })
     createdAt: Date;
+
+    @ApiProperty({ example: '2025-03-15T05:52:13.908Z' })
+    updatedAt: Date;
 }

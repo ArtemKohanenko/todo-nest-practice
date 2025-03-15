@@ -7,6 +7,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
+  // Импортированные модули в модуль App
   imports: [
     PassportModule.register({
       session: false,
