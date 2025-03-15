@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TaskModule } from './task/task.module';
 import { PassportModule } from '@nestjs/passport';
@@ -20,6 +19,6 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     AuthModule,
   ],
-  providers: [AppService, JwtStrategy],
+  providers: [JwtStrategy],
 })
 export class AppModule {}

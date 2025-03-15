@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import { RegisterDto } from 'src/auth/dto/register-dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -30,15 +29,9 @@ export class UserService {
     return usersWithoutPassword;
   }
 
-  async create(data: RegisterDto) {
-    const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(data.password, salt);
-
+  async create(data: Prisma.UserCreateInput) {
     const user = await this.prisma.user.create({
-      data: {
-        login: data.login,
-        passwordHash: hash,
-      },
+      data
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;

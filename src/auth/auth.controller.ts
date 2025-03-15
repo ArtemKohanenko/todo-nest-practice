@@ -1,30 +1,33 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login-dto';
-import { RegisterDto } from './dto/register-dto';
 import { UserService } from 'src/user/user.service';
-import { ApiCookieAuth } from '@nestjs/swagger';
 import { Response } from 'express';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly authService: AuthService
   ) {}
 
   @Post('register')
-  @ApiCookieAuth()
   async register(
     @Res({ passthrough: true }) res: Response,
-    @Body() registerDto: RegisterDto,
+    @Body() registerDto: LoginDto,
   ) {
-    const user = await this.userService.create(registerDto);
+    const passwordHash = await this.authService.hashPassword(
+      registerDto.password
+    )
+    const user = await this.userService.create({ login: registerDto.login, passwordHash });
     const payload = { login: user.login, id: user.id };
     res.cookie('token', this.jwtService.sign(payload), {
       httpOnly: true, // Защита от XSS!!!
       expires: new Date(Date.now() + 604800000),
     });
+    
     return user;
   }
 
