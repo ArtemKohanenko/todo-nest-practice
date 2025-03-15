@@ -21,21 +21,21 @@ import { UserService } from 'src/user/user.service';
 export class TaskController {
   constructor(
     private readonly taskService: TaskService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {}
 
   @UseGuards(JwtGuard)
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto, @UserId() userId: string) {  // @UserId() извлекает id из токена в куки
-    const user = this.userService.findOne({ id: userId });
-    
+  // @UserId() извлекает id из токена в куки
+  create(@Body() createTaskDto: CreateTaskDto, @UserId() userId: string) {
     // Создаем Task, передаем поля из createTaskDto объединенные с user
     // connect: {id: userId} отвечает за связь между Task и User
     return this.taskService.create({
       ...createTaskDto,
-      user: { 
-        connect: {id: userId}
-      } });
+      user: {
+        connect: { id: userId },
+      },
+    });
   }
 
   @UseGuards(JwtGuard)

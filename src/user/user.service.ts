@@ -31,7 +31,7 @@ export class UserService {
 
   async create(data: Prisma.UserCreateInput) {
     const user = await this.prisma.user.create({
-      data
+      data,
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;
