@@ -5,24 +5,28 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
+
   constructor(private prisma: PrismaService) {}
 
   async findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ) {
+    // Поиск пользователя
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
-
+    
     if (!user) {
       return null;
     }
 
+    // Убираем поле passwordHash из ответа
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
+  // Тот же самый метод, но оставляет passwordHash
   async findOneWithHash(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
@@ -31,21 +35,8 @@ export class UserService {
     });
   }
 
-  async findAll(params: {
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.TaskOrderByWithRelationInput;
-  }) {
-    const user = await this.prisma.user.findMany(params);
-    const usersWithoutPassword = user.map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { passwordHash, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    });
-
-    return usersWithoutPassword;
-  }
-
   async create(data: Prisma.UserCreateInput) {
+    // Создаем пользователя
     const user = await this.prisma.user.create({
       data,
     });
@@ -60,6 +51,7 @@ export class UserService {
     data: Prisma.UserUpdateInput;
   }) {
     const { where, data } = params;
+    // Обновляем
     const user = await this.prisma.user.update({
       data,
       where,
@@ -71,6 +63,7 @@ export class UserService {
   }
 
   async delete(where: Prisma.UserWhereUniqueInput) {
+    // Удаляем
     const user = await this.prisma.user.delete({
       where,
     });
@@ -82,23 +75,27 @@ export class UserService {
 
   // Генерация хэша пароля
   async hashPassword(password: string): Promise<string> {
+    // Генерация соли
     const salt = await bcrypt.genSalt();
+    // Генерация хэша
     const hash = await bcrypt.hash(password, salt);
 
     return hash;
   }
 
-  // Проверка хэша пароля в БД с хэшем отправленного пароля
+  // Сравнение хэша пароля в БД с хэшем отправленного пароля
   async comparePassword(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     password: string,
   ) {
+    // Проверяем, что пользователь существует
     const user = await this.findOneWithHash(userWhereUniqueInput);
 
     if (!user) {
       throw new BadRequestException('Wrong login or password');
     }
 
+    // Вычисляем хэш password и сравниваем с user.passwordHash
     const isMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!isMatch) {

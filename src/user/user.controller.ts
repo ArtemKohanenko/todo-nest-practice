@@ -14,10 +14,11 @@ export class UserController {
   @Post()
   @ApiResponse({ status: 200, type: UserDto })
   @ApiResponse({
-    status: 200,
+    status: 400,
     description: 'User with this login already exists',
   })
   async createUser(
+    // Получем body запроса
     @Body() registerDto: LoginDto,
   ) {
     const passwordHash = await this.userService.hashPassword(
@@ -28,6 +29,7 @@ export class UserController {
       login: registerDto.login,
     });
     if (userWithSameLogin) {
+      // Отправляем 400 ошибку
       throw new BadRequestException('User with this login already exists');
     }
     const user = await this.userService.create({
@@ -38,7 +40,6 @@ export class UserController {
     return user;
   }
   
-
   @UseGuards(JwtGuard)
   @Get('me')
   @ApiResponse({ status: 200, type: UserDto })

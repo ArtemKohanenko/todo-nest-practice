@@ -5,6 +5,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from './types';
 import { UserService } from 'src/user/user.service';
 
+// Добавляем в RequestType куки, чтобы линтер не ругался
 interface RequestWithCookies extends RequestType {
   cookies: {
     token?: string;

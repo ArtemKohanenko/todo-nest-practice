@@ -56,3 +56,15 @@ npx prisma migrate dev --name init
 # Запустить созданные миграции
 npx prisma migrate deploy
 ```
+
+## Можно рассмотреть дополнительно
+
+Предпочтительный вариант работы с переменными окружения:
+
+https://docs.nestjs.com/techniques/configuration
+
+Валидацию и трансформацию возвращаемых данных:
+
+https://docs.nestjs.com/techniques/serialization
+https://github.com/typestack/class-transformer/blob/develop/README.md
+https://github.com/typestack/class-validator/blob/develop/README.md

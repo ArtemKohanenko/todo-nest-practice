@@ -24,6 +24,7 @@ export class AuthController {
   @Post('login')
   @ApiResponse({ status: 200, type: UserDto })
   async login(
+    // passthrough позволяет использовать @Res() и return в одном методе
     @Res({ passthrough: true }) res: Response,
     @Body() loginDto: LoginDto,
   ) {
@@ -31,19 +32,22 @@ export class AuthController {
       { login: loginDto.login },
       loginDto.password,
     );
-    const payload = { username: user.login, id: user.id };
+    const payload = { id: user.id };
+
+    // Добавляем cookie
     res.cookie('token', this.jwtService.sign(payload), {
       httpOnly: true, // Защита от XSS!!!
       expires: new Date(Date.now() + SEVEN_DAYS_MILLISECONDS),
     });
+
     return user;
   }
 
   @Post('logout')
   @ApiResponse({ status: 200 })
   logout(@Res({ passthrough: true }) res: Response) {
+    // Удаляем токен из cookie
     res.cookie('token', '', {
-      // Удаляем token из cookie
       expires: new Date(Date.now()),
       httpOnly: true, // Защита от XSS!!!
     });
