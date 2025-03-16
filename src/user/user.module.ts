@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  // 
+  //
   controllers: [UserController],
   // Сервисы с бизнес-логикой
   providers: [UserService, PrismaService],

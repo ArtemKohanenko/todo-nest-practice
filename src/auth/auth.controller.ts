@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from '../user/dto/login-dto';
 import { UserService } from 'src/user/user.service';

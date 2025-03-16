@@ -1,4 +1,13 @@
-import { Controller, Get, Body, Patch, Param, Delete, BadRequestException, UseGuards, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Delete,
+  BadRequestException,
+  UseGuards,
+  Post,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiResponse } from '@nestjs/swagger';
@@ -39,7 +48,7 @@ export class UserController {
 
     return user;
   }
-  
+
   @UseGuards(JwtGuard)
   @Get('me')
   @ApiResponse({ status: 200, type: UserDto })
@@ -50,17 +59,25 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Patch('me')
   @ApiResponse({ status: 200, type: UserDto })
-  @ApiResponse({ status: 400, description: 'User with this login already exists' })
+  @ApiResponse({
+    status: 400,
+    description: 'User with this login already exists',
+  })
   async update(@UserId() id: string, @Body() updateUserDto: UpdateUserDto) {
     if (updateUserDto.login) {
-      const userWithSameLogin = await this.userService.findOne({ login: updateUserDto.login });
+      const userWithSameLogin = await this.userService.findOne({
+        login: updateUserDto.login,
+      });
 
       if (userWithSameLogin) {
         throw new BadRequestException('User with this login already exists');
       }
     }
 
-    return await this.userService.update({ where: { id }, data: updateUserDto });
+    return await this.userService.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
   @UseGuards(JwtGuard)

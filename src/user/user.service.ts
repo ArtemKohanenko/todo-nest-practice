@@ -5,17 +5,14 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-
   constructor(private prisma: PrismaService) {}
 
-  async findOne(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ) {
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
     // Поиск пользователя
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
-    
+
     if (!user) {
       return null;
     }

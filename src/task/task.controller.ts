@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   BadRequestException,
-  Logger,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
