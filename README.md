@@ -65,8 +65,10 @@ npx prisma migrate deploy
 
 https://docs.nestjs.com/techniques/configuration
 
-Валидацию и трансформацию возвращаемых данных:
+Валидация и трансформация возвращаемых данных:
 
 https://docs.nestjs.com/techniques/serialization
+
 https://github.com/typestack/class-transformer/blob/develop/README.md
+
 https://github.com/typestack/class-validator/blob/develop/README.md
