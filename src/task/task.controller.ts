@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -55,11 +57,23 @@ export class TaskController {
   @UseGuards(JwtGuard)
   @Patch(':id')
   @ApiResponse({ status: 200, type: TaskDto })
-  update(
+  @ApiResponse({ status: 400, description: 'Task not found' })
+  @ApiResponse({ status: 400, description: 'Access denied' })
+  async update(
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
     @UserId() userId: string,
   ) {
+    const task = await this.taskService.findOne({ id });
+
+    if (!task) {
+      throw new BadRequestException('Task not found');
+    }
+
+    if (task?.userId !== userId) {
+      throw new BadRequestException('Access denied');
+    }
+
     return this.taskService.update({
       where: { id, userId },
       data: updateTaskDto,
@@ -69,7 +83,13 @@ export class TaskController {
   @UseGuards(JwtGuard)
   @Delete(':id')
   @ApiResponse({ status: 200, type: TaskDto })
-  remove(@Param('id') id: string, @UserId() userId: string) {
+  async remove(@Param('id') id: string, @UserId() userId: string) {
+    const task = await this.taskService.findOne({ id, userId });
+
+    if (task?.userId !== userId) {
+      throw new BadRequestException('Access denied');
+    }
+
     return this.taskService.delete({ id, userId });
   }
 }

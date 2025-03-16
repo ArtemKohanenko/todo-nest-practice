@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 
+// UserDto наследует тип User, но без поля passwordHash
 export class UserDto implements Omit<User, 'passwordHash'> {
   @ApiProperty({ example: 'id' })
   id: string;

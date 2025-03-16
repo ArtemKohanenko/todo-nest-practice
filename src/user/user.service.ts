@@ -9,6 +9,22 @@ export class UserService {
 
   async findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
+  async findOneWithHash(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
@@ -64,12 +80,20 @@ export class UserService {
     return userWithoutPassword;
   }
 
+  // Генерация хэша пароля
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(password, salt);
+
+    return hash;
+  }
+
   // Проверка хэша пароля в БД с хэшем отправленного пароля
   async comparePassword(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     password: string,
   ) {
-    const user = await this.findOne(userWhereUniqueInput);
+    const user = await this.findOneWithHash(userWhereUniqueInput);
 
     if (!user) {
       throw new BadRequestException('Wrong login or password');

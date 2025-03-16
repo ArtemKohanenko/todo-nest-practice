@@ -10,7 +10,7 @@ export class CreateTaskDto {
   @IsString()
   description: string;
 
-  @ApiProperty({ example: false })
+  @ApiProperty({ example: false, required: false })
   @IsBoolean()
   @IsOptional()
   done?: boolean;
