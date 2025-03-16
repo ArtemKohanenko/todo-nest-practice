@@ -6,6 +6,7 @@ import { Response } from 'express';
 import { ApiResponse } from '@nestjs/swagger';
 import { UserDto } from 'src/user/dto/user.dto';
 
+// 7 дней в миллисекундах
 const SEVEN_DAYS_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 @Controller('auth')
@@ -22,16 +23,18 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() loginDto: LoginDto,
   ) {
+    // Сравниваем отправленный пароль с сохраненным в БД
     const user = await this.userService.comparePassword(
       { login: loginDto.login },
       loginDto.password,
     );
+    // Данные, которые будут закодированы в JWT
     const payload = { id: user.id };
 
     // Добавляем cookie
     res.cookie('token', this.jwtService.sign(payload), {
-      httpOnly: true, // Защита от XSS!!!
-      expires: new Date(Date.now() + SEVEN_DAYS_MILLISECONDS),
+      httpOnly: true, // Фронтенд не сможет прочитать токен, защита от XSS
+      expires: new Date(Date.now() + SEVEN_DAYS_MILLISECONDS), // Истекает через 7 дней
     });
 
     return user;
@@ -43,7 +46,7 @@ export class AuthController {
     // Удаляем токен из cookie
     res.cookie('token', '', {
       expires: new Date(Date.now()),
-      httpOnly: true, // Защита от XSS!!!
+      httpOnly: true, // Защита от XSS
     });
     return {};
   }

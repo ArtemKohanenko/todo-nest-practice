@@ -18,23 +18,22 @@ import { LoginDto } from './dto/login-dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}   // Внедряем зависимость UserService
 
   @Post()
-  @ApiResponse({ status: 200, type: UserDto })
-  @ApiResponse({
+  @ApiResponse({ status: 200, type: UserDto })    // Документируем ответ с кодом 200
+  @ApiResponse({                                  // Документируем ответ с кодом 400 (Bad Request error)
     status: 400,
     description: 'User with this login already exists',
   })
   async createUser(
-    // Получем body запроса
-    @Body() registerDto: LoginDto,
+    @Body() registerDto: LoginDto   // Получем body запроса, валидируем по схеме LoginDto
   ) {
-    const passwordHash = await this.userService.hashPassword(
+    const passwordHash = await this.userService.hashPassword(       // Хэш-преобразование пароля
       registerDto.password,
     );
 
-    const userWithSameLogin = await this.userService.findOne({
+    const userWithSameLogin = await this.userService.findOne({  // Проверяем наличие пользователя с таким же логином
       login: registerDto.login,
     });
     if (userWithSameLogin) {
